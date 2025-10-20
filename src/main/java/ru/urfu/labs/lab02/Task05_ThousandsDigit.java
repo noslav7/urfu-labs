@@ -1,4 +1,4 @@
-package ru.urfu.lab02;
+package ru.urfu.labs.lab02;
 
 import java.util.Scanner;
 
