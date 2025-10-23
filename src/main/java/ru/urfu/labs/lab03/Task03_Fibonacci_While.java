@@ -1,8 +1,8 @@
-package ru.urfu.labs.lab01;
+package ru.urfu.labs.lab03;
 
 import java.util.Scanner;
 
-public class Task03_Fibonacci_For {
+public class Task03_Fibonacci_While {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("Введите количество чисел Фибоначчи: ");
@@ -19,9 +19,10 @@ public class Task03_Fibonacci_For {
 			return;
 		}
 
+		int i = 1;
 		long a = 1;
 		long b = 1;
-		for (int i = 1; i <= n; i++) {
+		while (i <= n) {
 			if (i == 1 || i == 2) {
 				System.out.print("1");
 			} else {
@@ -33,6 +34,7 @@ public class Task03_Fibonacci_For {
 			if (i < n) {
 				System.out.print(", ");
 			}
+			i++;
 		}
 		System.out.println();
 

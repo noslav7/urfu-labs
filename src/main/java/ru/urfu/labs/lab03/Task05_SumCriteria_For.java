@@ -1,4 +1,4 @@
-package ru.urfu.labs.lab01;
+package ru.urfu.labs.lab03;
 
 import java.util.ArrayList;
 import java.util.List;

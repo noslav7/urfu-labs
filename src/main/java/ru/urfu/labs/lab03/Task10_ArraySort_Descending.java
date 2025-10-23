@@ -1,4 +1,4 @@
-package ru.urfu.labs.lab01;
+package ru.urfu.labs.lab03;
 
 import java.util.Arrays;
 import java.util.Random;

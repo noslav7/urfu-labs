@@ -1,4 +1,4 @@
-package ru.urfu.labs.lab01;
+package ru.urfu.labs.lab03;
 
 public class Task07_CharArray_StepTwo {
 	public static void main(String[] args) {
