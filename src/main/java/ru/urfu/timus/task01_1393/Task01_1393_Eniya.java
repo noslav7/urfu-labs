@@ -1,4 +1,4 @@
-package ru.urfu.timus;
+package ru.urfu.timus.task01_1393;
 
 import java.io.PrintWriter;
 import java.util.Scanner;
