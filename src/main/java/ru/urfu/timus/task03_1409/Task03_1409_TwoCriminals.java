@@ -19,5 +19,6 @@ public class Task03_1409_TwoCriminals {
 
         out.println(harry + " " + larry);
         out.flush();
+        in.close();
     }
 }

@@ -25,5 +25,6 @@ public class Task05_2012_AboutGrisha {
 
         System.out.println(result);
         out.flush();
+        input.close();
     }
 }

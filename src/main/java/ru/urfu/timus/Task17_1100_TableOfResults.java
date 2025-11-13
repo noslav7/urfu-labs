@@ -13,11 +13,13 @@ public class Task17_1100_TableOfResults {
             a[i][1] = sc.nextInt();
         }
         Arrays.sort(a, (x, y) -> Integer.compare(y[1], x[1]));
+        
         StringBuilder sb = new StringBuilder();
         for (int[] r : a) {
             sb.append(r[0]).append(' ').append(r[1]).append('\n');
         }
         System.out.print(sb);
+        sc.close();
     }
 }
 
