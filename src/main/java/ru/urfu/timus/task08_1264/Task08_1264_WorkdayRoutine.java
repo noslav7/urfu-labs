@@ -5,15 +5,15 @@ import java.util.Scanner;
 public class Task08_1264_WorkdayRoutine {
 
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
+        try (Scanner input = new Scanner(System.in)) {
+            int n = input.nextInt();
+            int m = input.nextInt();
 
-        int n = input.nextInt();
-        int m = input.nextInt();
+            int numberOfM = m + 1;
 
-        int numberOfM = m + 1;
+            int result = n * numberOfM;
 
-        int result = n * numberOfM;
-
-        System.out.println(result);
+            System.out.println(result);
+        }
     }
 }
