@@ -1,4 +1,4 @@
-package ru.urfu.timus;
+package ru.urfu.timus.task18_1654;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

@@ -1,4 +1,4 @@
-package ru.urfu.timus;
+package ru.urfu.timus.task17_1100;
 
 import java.util.*;
 
