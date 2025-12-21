@@ -2,7 +2,7 @@ package ru.urfu.timus.task11_2066;
 
 import java.util.Scanner;
 
-public class Task11_2066_SimpleExpression {
+public class Main {
 
     public static void main(String[] args) {
         Scanner in  = new Scanner(System.in);

@@ -2,7 +2,7 @@ package ru.urfu.timus.task09_1787;
 
 import java.util.Scanner;
 
-public class Task09_1787_TurnToMEGA {
+public class Main {
 
     public static void main(String[] args) {
         Scanner in =  new Scanner(System.in);

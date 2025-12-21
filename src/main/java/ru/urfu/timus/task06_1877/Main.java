@@ -2,7 +2,7 @@ package ru.urfu.timus.task06_1877;
 
 import java.util.Scanner;
 
-public class Task06_1877_BicycleCodes {
+public class Main {
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);

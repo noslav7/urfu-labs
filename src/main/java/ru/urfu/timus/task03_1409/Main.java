@@ -3,7 +3,7 @@ package ru.urfu.timus.task03_1409;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class Task03_1409_TwoCriminals {
+public class Main {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);

@@ -2,7 +2,7 @@ package ru.urfu.timus.task02_2100;
 
 import java.io.*;
 
-public class Task02_2100_WeddingLunch {
+public class Main {
 
     public static void main(String[] args) {
         String inputFileName = "src/main/java/ru/urfu/timus/task02_2100/input.txt";

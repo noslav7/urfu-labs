@@ -1,8 +1,8 @@
-package ru.urfu.timus.task04_1785;
+package ru.urfu.timus.Task04_1785;
 
 import java.util.Scanner;
 
-public class Task04_1785_LocalizationDifficulties {
+public class Main {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);

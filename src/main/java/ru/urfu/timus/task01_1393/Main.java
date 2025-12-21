@@ -3,7 +3,7 @@ package ru.urfu.timus.task01_1393;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class Task01_1393_Eniya {
+public class Main {
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);

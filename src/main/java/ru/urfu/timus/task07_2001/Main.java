@@ -2,7 +2,7 @@ package ru.urfu.timus.task07_2001;
 
 import java.util.Scanner;
 
-public class Task07_2001_MathematiciansBerries {
+public class Main {
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
