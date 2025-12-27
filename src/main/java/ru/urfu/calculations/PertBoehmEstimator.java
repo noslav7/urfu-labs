@@ -121,10 +121,10 @@ public class PertBoehmEstimator {
 
     private static WorkType readWorkType(Scanner sc, String name) {
         System.out.println("[" + name + "] Введите: count O M P");
-        int count = readInt(sc, "  count = ", 0, Integer.MAX_VALUE);
-        double o = readDouble(sc, "  O (optimistic) = ", 0.0, Double.MAX_VALUE);
-        double m = readDouble(sc, "  M (most likely)= ", 0.0, Double.MAX_VALUE);
-        double p = readDouble(sc, "  P (pessimistic)= ", 0.0, Double.MAX_VALUE);
+        int count = readInt(sc);
+        double o = readDouble(sc, "  O (optimistic) = ");
+        double m = readDouble(sc, "  M (most likely)= ");
+        double p = readDouble(sc, "  P (pessimistic)= ");
 
         if (!(o <= m && m <= p)) {
             System.out.println("  Внимание: обычно ожидается O <= M <= P. Продолжаю расчёт.");
@@ -133,12 +133,12 @@ public class PertBoehmEstimator {
         return new WorkType(name, count, o, m, p);
     }
 
-    private static int readInt(Scanner sc, String prompt, int min, int max) {
+    private static int readInt(Scanner sc) {
         while (true) {
-            System.out.print(prompt);
+            System.out.print("  count = ");
             try {
                 int v = Integer.parseInt(sc.nextLine().trim());
-                if (v < min || v > max) {
+                if (v < 0 || v > Integer.MAX_VALUE) {
                     System.out.println("  Ошибка: значение вне диапазона.");
                     continue;
                 }
@@ -149,12 +149,12 @@ public class PertBoehmEstimator {
         }
     }
 
-    private static double readDouble(Scanner sc, String prompt, double min, double max) {
+    private static double readDouble(Scanner sc, String prompt) {
         while (true) {
             System.out.print(prompt);
             try {
                 double v = Double.parseDouble(sc.nextLine().trim().replace(',', '.'));
-                if (v < min || v > max) {
+                if (v < 0.0 || v > Double.MAX_VALUE) {
                     System.out.println("  Ошибка: значение вне диапазона.");
                     continue;
                 }
