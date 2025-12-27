@@ -1,4 +1,4 @@
-package ru.urfu.timus.Task04_1785;
+package ru.urfu.timus.task04_1785;
 
 import java.util.Scanner;
 
