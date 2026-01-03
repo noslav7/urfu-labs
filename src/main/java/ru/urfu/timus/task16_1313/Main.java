@@ -31,13 +31,13 @@ public class Main {
 
             for (int i = 0; i < size; i++) {
                 for (int j = i; j >= 0; j--) {
-                    System.out.println(ints[j][i - j] + " ");
+                    System.out.print(ints[j][i - j] + " ");
                 }
             }
 
             for (int i = 1; i < size; i++) {
                 for (int j = size - 1; j >= i; j--) {
-                    System.out.println(ints[j][size - j + i - 1] + " ");
+                    System.out.print(ints[j][size - j + i - 1] + " ");
                 }
             }
 
