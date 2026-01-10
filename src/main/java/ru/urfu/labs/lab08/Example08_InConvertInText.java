@@ -32,7 +32,7 @@ public class Example08_InConvertInText {
 
     public static void main(String[] args) {
         try {
-            Path base = Paths.get("lab08_data", "ex08");
+            Path base = Paths.get("src", "main", "java", "ru", "urfu", "labs", "lab08", "lab08_data", "ex08");
             Files.createDirectories(base);
             Path file = base.resolve("MyFile1.txt");
             Files.writeString(file, "Работа с кодировкой через InputStreamReader.", CP1251);

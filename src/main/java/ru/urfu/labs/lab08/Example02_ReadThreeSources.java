@@ -30,7 +30,7 @@ public class Example02_ReadThreeSources {
 
     public static void main(String[] args) {
         try {
-            Path base = Paths.get("lab08_data", "ex02");
+            Path base = Paths.get("src", "main", "java", "ru", "urfu", "labs", "lab08", "lab08_data", "ex02");
             Files.createDirectories(base);
             Path file = base.resolve("source.txt");
             Files.writeString(file, "Строка из файла\nВторая строка", OUTPUT);

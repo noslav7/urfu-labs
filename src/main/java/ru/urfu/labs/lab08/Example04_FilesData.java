@@ -18,7 +18,7 @@ import java.util.Scanner;
  */
 public class Example04_FilesData {
     public static void main(String[] args) {
-        Path base = Paths.get("lab08_data", "ex04", "My");
+        Path base = Paths.get("src", "main", "java", "ru", "urfu", "labs", "lab08", "lab08_data", "ex04", "My");
         try {
             Files.createDirectories(base);
             File f1 = base.resolve("numIsh.txt").toFile();

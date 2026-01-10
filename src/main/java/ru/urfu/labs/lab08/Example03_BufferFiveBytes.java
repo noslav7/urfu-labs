@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 public class Example03_BufferFiveBytes {
     public static void main(String[] args) {
         try {
-            Path base = Paths.get("lab08_data", "ex03");
+            Path base = Paths.get("src", "main", "java", "ru", "urfu", "labs", "lab08", "lab08_data", "ex03");
             Files.createDirectories(base);
             Path file = base.resolve("buffered.txt");
             Files.writeString(file, "Буфер в 5 байт показывает работу чтения.", StandardCharsets.UTF_8);

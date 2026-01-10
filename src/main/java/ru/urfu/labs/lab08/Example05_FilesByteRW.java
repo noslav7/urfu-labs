@@ -2,6 +2,7 @@ package ru.urfu.labs.lab08;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,6 +19,10 @@ public class Example05_FilesByteRW {
             String fname = sc.nextLine();
             try {
                 File f1 = new File(fname);
+                File parent = f1.getParentFile();
+                if (parent != null) {
+                    parent.mkdirs(); // создаём директории, если указаны во входном пути
+                }
                 f1.createNewFile();
                 System.out.println("Полный путь файла:\t" + f1.getAbsolutePath());
 
@@ -34,8 +39,12 @@ public class Example05_FilesByteRW {
                 }
 
                 try (DataInputStream dIn = new DataInputStream(new FileInputStream(f1))) {
-                    while (true) {
-                        System.out.println(dIn.readUTF());
+                    try {
+                        while (true) {
+                            System.out.println(dIn.readUTF());
+                        }
+                    } catch (EOFException ignored) {
+                        // нормальное завершение чтения
                     }
                 }
             } catch (Exception e) {

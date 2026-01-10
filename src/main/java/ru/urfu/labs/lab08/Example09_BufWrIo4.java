@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Пример 9. Буферизация символьных потоков на базе байтовых.
@@ -18,13 +21,22 @@ public class Example09_BufWrIo4 {
         BufferedWriter bw = null;
         try {
             Charset cp1251 = Charset.forName("cp1251");
+            Path base = Paths.get("src", "main", "java", "ru", "urfu", "labs", "lab08", "lab08_data", "ex09");
+            Files.createDirectories(base);
+            Path source = base.resolve("MyFile1.txt");
+            Path dest = base.resolve("MyFile2.txt");
+
+            if (!Files.exists(source)) {
+                Files.writeString(source, "Строка один\nСтрока два\nСтрока три", cp1251);
+            }
+
             br = new BufferedReader(
                     new InputStreamReader(
-                            new FileInputStream("E:\\MyFile1.txt"), cp1251));
+                            new FileInputStream(source.toFile()), cp1251));
 
             bw = new BufferedWriter(
                     new OutputStreamWriter(
-                            new FileOutputStream("E:\\MyFile2.txt"), cp1251));
+                            new FileOutputStream(dest.toFile()), cp1251));
 
             int lineCount = 0; // счетчик строк
             String s;

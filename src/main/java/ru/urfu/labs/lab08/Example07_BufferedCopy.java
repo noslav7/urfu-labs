@@ -14,7 +14,7 @@ import java.nio.file.Paths;
  */
 public class Example07_BufferedCopy {
     public static void main(String[] args) {
-        Path base = Paths.get("lab08_data", "ex07");
+        Path base = Paths.get("src", "main", "java", "ru", "urfu", "labs", "lab08", "lab08_data", "ex07");
         Path source = base.resolve("MyFile1.txt");
         Path dest = base.resolve("MyFile2.txt");
         try {

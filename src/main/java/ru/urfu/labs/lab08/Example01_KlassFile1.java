@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 public class Example01_KlassFile1 {
     public static void main(String[] args) {
         try {
-            Path base = Paths.get("lab08_data", "ex01");
+            Path base = Paths.get("src", "main", "java", "ru", "urfu", "labs", "lab08", "lab08_data", "ex01");
             Files.createDirectories(base);
 
             // Создание файла в текущей папке (каталог примеров)
