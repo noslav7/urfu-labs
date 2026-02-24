@@ -1,4 +1,4 @@
-package ru.urfu.labs.lab09;
+package ru.urfu.labs.lab09.task01;
 
 /**
  * Лабораторная работа №09, задание 1.
