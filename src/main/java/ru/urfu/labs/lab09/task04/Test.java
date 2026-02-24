@@ -1,8 +1,7 @@
 package ru.urfu.labs.lab09.task04;
 
-public class Test { // ГЛАВНЫЙ КЛАСС
+public class Test {
     public static void main(String[] args) {
-        // создание несвязанных узлов с помощью конструктора
         Node node0 = new Node(0, null); // 0-й узел - будет головой списка
         Node node1 = new Node(1, null);
         Node node2 = new Node(2, null);

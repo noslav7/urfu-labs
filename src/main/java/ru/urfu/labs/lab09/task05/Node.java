@@ -1,4 +1,4 @@
-package ru.urfu.labs.lab09.task04;
+package ru.urfu.labs.lab09.task05;
 
 class Node {
     public int value;
