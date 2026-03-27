@@ -2,6 +2,16 @@
 
 Папка с решениями: `src/main/java/ru/urfu/labs/lab10/point2_1`
 
+## Кодировка (Windows PowerShell)
+
+Перед запуском Java-примеров выполните:
+
+```powershell
+chcp 65001
+```
+
+Это переключит консоль в UTF-8 и устранит вывод вида `?????` вместо русского текста.
+
 ## Что реализовано
 
 - XML: создание и чтение
@@ -15,7 +25,7 @@
 Из корня проекта выполните:
 
 ```powershell
-mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.Lab10Runner" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+mvn -q "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.Lab10Runner" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
 ```
 
 ## Запуск примеров по отдельности
@@ -25,13 +35,13 @@ mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.Lab10Runner" or
 Создать XML:
 
 ```powershell
-mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example1.CreateXmlFile" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+mvn -q "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example1.CreateXmlFile" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
 ```
 
 Прочитать XML:
 
 ```powershell
-mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example1.XmlParser" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+mvn -q "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example1.XmlParser" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
 ```
 
 ### JSON
@@ -39,13 +49,13 @@ mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example1.XmlPar
 Создать JSON:
 
 ```powershell
-mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example2.JsonCreator" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+mvn -q "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example2.JsonCreator" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
 ```
 
 Прочитать JSON:
 
 ```powershell
-mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example2.JsonParser" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+mvn -q "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example2.JsonParser" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
 ```
 
 ### HTML
@@ -53,13 +63,13 @@ mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example2.JsonPa
 Ссылки со страницы `https://itlearn.ru/first-steps`:
 
 ```powershell
-mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example5.LinkParser" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+mvn -q "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example5.LinkParser" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
 ```
 
 Новости с `http://fat.urfu.ru/index.html`:
 
 ```powershell
-mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example4.NewsParser" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+mvn -q "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example4.NewsParser" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
 ```
 
 ### Excel
@@ -67,13 +77,13 @@ mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example4.NewsPa
 Создать `.xlsx`:
 
 ```powershell
-mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example3.WriteExcelFileExample" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+mvn -q "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example3.WriteExcelFileExample" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
 ```
 
 Прочитать `.xlsx`:
 
 ```powershell
-mvn -q -DskipTests "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example3.ReadExcelFileExample" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+mvn -q "-Dexec.mainClass=ru.urfu.labs.lab10.point2_1.example3.ReadExcelFileExample" org.codehaus.mojo:exec-maven-plugin:3.5.0:java
 ```
 
 ## Файлы данных

@@ -2,6 +2,7 @@ package ru.urfu.labs.lab10.point2_1.example1;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import ru.urfu.labs.lab10.ConsoleEncodingUtil;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,6 +27,7 @@ public class CreateXmlFile {
      * Создаёт XML-документ с корневым элементом library и двумя книгами.
      */
     public static void main(String[] args) {
+        ConsoleEncodingUtil.ensureUtf8Console();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();

@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.urfu.labs.lab10.ConsoleEncodingUtil;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -17,6 +18,7 @@ public class NewsParser {
      * Загружает страницу новостей, извлекает заголовки и даты, либо выводит подсказки при изменении верстки.
      */
     public static void main(String[] args) {
+        ConsoleEncodingUtil.ensureUtf8Console();
         try {
             Document doc = Jsoup.connect("http://fat.urfu.ru/index.html").get();
 

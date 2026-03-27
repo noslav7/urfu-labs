@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.urfu.labs.lab10.ConsoleEncodingUtil;
 
 /**
  * Подключается к учебной странице и выводит в консоль все найденные абсолютные ссылки.
@@ -14,6 +15,7 @@ public class LinkParser {
      * Загружает веб-страницу и печатает абсолютные URL всех ссылок.
      */
     public static void main(String[] args) {
+        ConsoleEncodingUtil.ensureUtf8Console();
         String url = "https://itlearn.ru/first-steps";
         try {
             Document doc = Jsoup.connect(url).get();

@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import ru.urfu.labs.lab10.ConsoleEncodingUtil;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class ReadExcelFileExample {
      * Открывает Excel-файл и построчно выводит содержимое листа "Товары".
      */
     public static void main(String[] args) throws IOException {
+        ConsoleEncodingUtil.ensureUtf8Console();
         try (FileInputStream inputStream = new FileInputStream(XLSX_PATH.toFile());
              XSSFWorkbook workbook = new XSSFWorkbook(inputStream)) {
 

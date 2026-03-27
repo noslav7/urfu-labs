@@ -3,8 +3,10 @@ package ru.urfu.labs.lab10.point2_1.example2;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import ru.urfu.labs.lab10.ConsoleEncodingUtil;
 
 import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 /**
@@ -20,9 +22,10 @@ public class JsonParser {
      * Читает JSON-файл библиотеки и печатает в консоль каждую книгу.
      */
     public static void main(String[] args) {
+        ConsoleEncodingUtil.ensureUtf8Console();
         try {
             JSONParser parser = new JSONParser();
-            Object obj = parser.parse(new FileReader(JSON_PATH.toFile()));
+            Object obj = parser.parse(new FileReader(JSON_PATH.toFile(), StandardCharsets.UTF_8));
 
             JSONObject jsonObject = (JSONObject) obj;
             System.out.println("Корневой элемент: " + jsonObject.keySet().iterator().next());
