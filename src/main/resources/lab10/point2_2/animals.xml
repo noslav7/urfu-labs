@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<animals>
+      
+  
+  <animal>
+            
+    
+    <name>Барсик</name>
+            
+    
+    <species>Кот</species>
+            
+    
+    <breed>Британская короткошерстная</breed>
+            
+    
+    <age>3</age>
+            
+    
+    <owner>Иван Петров</owner>
+          
+  
+  </animal>
+      
+  
+  <animal>
+            
+    
+    <name>Рекс</name>
+            
+    
+    <species>Собака</species>
+            
+    
+    <breed>Немецкая овчарка</breed>
+            
+    
+    <age>5</age>
+            
+    
+    <owner>Анна Смирнова</owner>
+          
+  
+  </animal>
+      
+  
+  <animal>
+            
+    
+    <name>Кеша</name>
+            
+    
+    <species>Попугай</species>
+            
+    
+    <breed>Волнистый</breed>
+            
+    
+    <age>2</age>
+            
+    
+    <owner>Олег Иванов</owner>
+          
+  
+  </animal>
+      
+  
+  <animal>
+            
+    
+    <name>Муся</name>
+            
+    
+    <species>Кот</species>
+            
+    
+    <breed>Сфинкс</breed>
+            
+    
+    <age>4</age>
+            
+    
+    <owner>Екатерина Орлова</owner>
+          
+  
+  </animal>
+      
+  
+  <animal>
+            
+    
+    <name>Тайсон</name>
+            
+    
+    <species>Собака</species>
+            
+    
+    <breed>Боксер</breed>
+            
+    
+    <age>6</age>
+            
+    
+    <owner>Дмитрий Волков</owner>
+          
+  
+  </animal>
+      
+  
+  <animal>
+            
+    
+    <name>Герда</name>
+            
+    
+    <species>Собака</species>
+            
+    
+    <breed>Хаски</breed>
+            
+    
+    <age>3</age>
+            
+    
+    <owner>Мария Лебедева</owner>
+          
+  
+  </animal>
+      
+  
+  <animal>
+            
+    
+    <name>Снежок</name>
+            
+    
+    <species>Кролик</species>
+            
+    
+    <breed>Декоративный</breed>
+            
+    
+    <age>1</age>
+            
+    
+    <owner>Никита Беляев</owner>
+          
+  
+  </animal>
+      
+  
+  <animal>
+            
+    
+    <name>Тоша</name>
+            
+    
+    <species>Хомяк</species>
+            
+    
+    <breed>Сирийский</breed>
+            
+    
+    <age>2</age>
+            
+    
+    <owner>Алина Кузнецова</owner>
+          
+  
+  </animal>
+      
+  
+  <animal>
+            
+    
+    <name>Чика</name>
+            
+    
+    <species>Попугай</species>
+            
+    
+    <breed>Корелла</breed>
+            
+    
+    <age>5</age>
+            
+    
+    <owner>Сергей Михайлов</owner>
+          
+  
+  </animal>
+      
+  
+  <animal>
+            
+    
+    <name>Буся</name>
+            
+    
+    <species>Морская свинка</species>
+            
+    
+    <breed>Розеточная</breed>
+            
+    
+    <age>2</age>
+            
+    
+    <owner>Дарья Соколова</owner>
+          
+  
+  </animal>
+    
+  
+
+</animals>

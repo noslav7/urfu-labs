@@ -1,5 +1,6 @@
 package ru.urfu.labs.lab10.point2_1;
 
+import ru.urfu.labs.lab10.ConsoleEncodingUtil;
 import ru.urfu.labs.lab10.point2_1.example1.CreateXmlFile;
 import ru.urfu.labs.lab10.point2_1.example1.XmlParser;
 import ru.urfu.labs.lab10.point2_1.example2.JsonCreator;
@@ -18,6 +19,7 @@ public class Lab10Runner {
      * Последовательно запускает примеры по XML, JSON, Excel и HTML-парсингу.
      */
     public static void main(String[] args) {
+        ConsoleEncodingUtil.ensureUtf8Console();
         run("1.2.1 Создание XML", () -> CreateXmlFile.main(new String[0]));
         run("1.2.2 Чтение XML", () -> XmlParser.main(new String[0]));
 

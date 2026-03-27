@@ -2,8 +2,10 @@ package ru.urfu.labs.lab10.point2_1.example2;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import ru.urfu.labs.lab10.ConsoleEncodingUtil;
 
 import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -20,6 +22,7 @@ public class JsonCreator {
      * Создаёт JSON-объект библиотеки и сохраняет его в файл.
      */
     public static void main(String[] args) {
+        ConsoleEncodingUtil.ensureUtf8Console();
         JSONObject library = new JSONObject();
         JSONArray books = new JSONArray();
 
@@ -40,7 +43,7 @@ public class JsonCreator {
 
         try {
             Files.createDirectories(JSON_PATH.getParent());
-            try (FileWriter file = new FileWriter(JSON_PATH.toFile())) {
+            try (FileWriter file = new FileWriter(JSON_PATH.toFile(), StandardCharsets.UTF_8)) {
                 file.write(library.toJSONString());
             }
             System.out.println("JSON-файл успешно создан: " + JSON_PATH);

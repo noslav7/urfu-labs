@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import ru.urfu.labs.lab10.ConsoleEncodingUtil;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,6 +24,7 @@ public class XmlParser {
      * Открывает XML-файл и выводит в консоль корневой элемент и данные по всем книгам.
      */
     public static void main(String[] args) {
+        ConsoleEncodingUtil.ensureUtf8Console();
         try {
             File inputFile = XML_PATH.toFile();
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

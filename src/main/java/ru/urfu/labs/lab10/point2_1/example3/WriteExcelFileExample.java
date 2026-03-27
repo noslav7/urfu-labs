@@ -3,6 +3,7 @@ package ru.urfu.labs.lab10.point2_1.example3;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import ru.urfu.labs.lab10.ConsoleEncodingUtil;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class WriteExcelFileExample {
      * Создаёт книгу Excel, заполняет лист "Товары" и сохраняет файл на диск.
      */
     public static void main(String[] args) throws IOException {
+        ConsoleEncodingUtil.ensureUtf8Console();
         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
             XSSFSheet sheet = workbook.createSheet("Товары");
 
