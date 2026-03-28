@@ -9,8 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>24</maven.compiler.source>
-        <maven.compiler.target>24</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -40,11 +39,20 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <systemPropertyVariables>
-                        <file.encoding>UTF-8</file.encoding>
-                        <sun.stdout.encoding>UTF-8</sun.stdout.encoding>
-                        <sun.stderr.encoding>UTF-8</sun.stderr.encoding>
-                    </systemPropertyVariables>
+                    <systemProperties>
+                        <systemProperty>
+                            <key>file.encoding</key>
+                            <value>UTF-8</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>sun.stdout.encoding</key>
+                            <value>UTF-8</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>sun.stderr.encoding</key>
+                            <value>UTF-8</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>
