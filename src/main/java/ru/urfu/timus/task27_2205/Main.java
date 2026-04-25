@@ -1,86 +1,86 @@
 package ru.urfu.timus.task27_2205;
 
 public class Main {
-    private static final int MAX = 10_000_000;
-    private static final int BUF = 1 << 16;
-    private static final byte[] BUF_ARR = new byte[BUF];
-    private static final int[] SPF = new int[MAX + 1];
-    private static final int[] DEPTH = new int[MAX + 1];
-    private static final int[] PRIMES = new int[700_000];
-    private static final int[] TMP = new int[32];
+    private static final int MAX_VALUE = 10_000_000;
+    private static final int INPUT_BUFFER_SIZE = 1 << 16;
+    private static final byte[] INPUT_BUFFER = new byte[INPUT_BUFFER_SIZE];
+    private static final int[] smallestPrimeFactor = new int[MAX_VALUE + 1];
+    private static final int[] depthCache = new int[MAX_VALUE + 1];
+    private static final int[] primes = new int[700_000];
+    private static final int[] tempPath = new int[32];
 
-    private static int len = 0;
-    private static int ptr = 0;
+    private static int bufferLength = 0;
+    private static int bufferPointer = 0;
 
     public static void main(String[] args) throws Exception {
         buildSpf();
 
-        int n = nextInt();
-        StringBuilder out = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            int a = nextInt();
-            int b = nextInt();
-            out.append(lcaValue(a, b)).append('\n');
+        int queryCount = nextInt();
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < queryCount; i++) {
+            int first = nextInt();
+            int second = nextInt();
+            output.append(findLowestCommonAncestorValue(first, second)).append('\n');
         }
-        System.out.print(out.toString());
+        System.out.print(output.toString());
     }
 
-    private static int lcaValue(int a, int b) {
-        int da = depth(a);
-        int db = depth(b);
-        int x = a, y = b;
-        while (da > db) {
-            x = parent(x);
-            da--;
+    private static int findLowestCommonAncestorValue(int first, int second) {
+        int firstDepth = getDepth(first);
+        int secondDepth = getDepth(second);
+        int firstValue = first, secondValue = second;
+        while (firstDepth > secondDepth) {
+            firstValue = getParent(firstValue);
+            firstDepth--;
         }
-        while (db > da) {
-            y = parent(y);
-            db--;
+        while (secondDepth > firstDepth) {
+            secondValue = getParent(secondValue);
+            secondDepth--;
         }
-        while (x != y) {
-            x = parent(x);
-            y = parent(y);
+        while (firstValue != secondValue) {
+            firstValue = getParent(firstValue);
+            secondValue = getParent(secondValue);
         }
-        return x;
+        return firstValue;
     }
 
-    private static int depth(int x) {
-        int cached = DEPTH[x];
+    private static int getDepth(int value) {
+        int cached = depthCache[value];
         if (cached != 0) return cached;
 
-        int cnt = 0;
-        int cur = x;
-        while (cur != 1 && DEPTH[cur] == 0) {
-            TMP[cnt++] = cur;
-            cur = parent(cur);
+        int pathLength = 0;
+        int current = value;
+        while (current != 1 && depthCache[current] == 0) {
+            tempPath[pathLength++] = current;
+            current = getParent(current);
         }
-        int base = DEPTH[cur];
-        for (int i = cnt - 1; i >= 0; i--) {
-            DEPTH[TMP[i]] = base + (cnt - i);
+        int knownDepth = depthCache[current];
+        for (int i = pathLength - 1; i >= 0; i--) {
+            depthCache[tempPath[i]] = knownDepth + (pathLength - i);
         }
-        return DEPTH[x];
+        return depthCache[value];
     }
 
-    private static int parent(int x) {
-        return x / SPF[x];
+    private static int getParent(int value) {
+        return value / smallestPrimeFactor[value];
     }
 
     private static void buildSpf() {
-        int pCount = 0;
-        for (int i = 2; i <= MAX; i++) {
-            if (SPF[i] == 0) {
-                SPF[i] = i;
-                PRIMES[pCount++] = i;
+        int primeCount = 0;
+        for (int value = 2; value <= MAX_VALUE; value++) {
+            if (smallestPrimeFactor[value] == 0) {
+                smallestPrimeFactor[value] = value;
+                primes[primeCount++] = value;
             }
-            for (int j = 0; j < pCount; j++) {
-                int p = PRIMES[j];
-                int v = p * i;
-                if (v > MAX) break;
-                SPF[v] = p;
-                if (p == SPF[i]) break;
+            for (int j = 0; j < primeCount; j++) {
+                int prime = primes[j];
+                int composite = prime * value;
+                if (composite > MAX_VALUE) break;
+                smallestPrimeFactor[composite] = prime;
+                if (prime == smallestPrimeFactor[value]) break;
             }
         }
-        SPF[1] = 1;
+        smallestPrimeFactor[1] = 1;
     }
 
     private static int nextInt() throws Exception {
@@ -88,20 +88,20 @@ public class Main {
         do {
             c = read();
         } while (c <= ' ' && c != -1);
-        int v = 0;
+        int value = 0;
         while (c > ' ') {
-            v = v * 10 + (c - '0');
+            value = value * 10 + (c - '0');
             c = read();
         }
-        return v;
+        return value;
     }
 
     private static int read() throws Exception {
-        if (ptr >= len) {
-            len = System.in.read(BUF_ARR);
-            ptr = 0;
-            if (len <= 0) return -1;
+        if (bufferPointer >= bufferLength) {
+            bufferLength = System.in.read(INPUT_BUFFER);
+            bufferPointer = 0;
+            if (bufferLength <= 0) return -1;
         }
-        return BUF_ARR[ptr++];
+        return INPUT_BUFFER[bufferPointer++];
     }
 }

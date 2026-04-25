@@ -3,124 +3,127 @@ package ru.urfu.timus.task28_2219;
 import java.util.Arrays;
 
 public class Main {
-    private static final int BUF = 1 << 16;
-    private static final byte[] BUFFER = new byte[BUF];
-    private static int len = 0;
-    private static int ptr = 0;
+    private static final int INPUT_BUFFER_SIZE = 1 << 16;
+    private static final byte[] INPUT_BUFFER = new byte[INPUT_BUFFER_SIZE];
+    private static int bufferLength = 0;
+    private static int bufferPointer = 0;
 
     public static void main(String[] args) throws Exception {
-        int n = nextInt();
-        int m = nextInt();
-        int k = nextInt();
+        int vertexCount = nextInt();
+        int edgeCount = nextInt();
+        int cupCount = nextInt();
 
-        int[] head = new int[n + 1];
-        int[] to = new int[2 * m];
-        int[] next = new int[2 * m];
-        Arrays.fill(head, -1);
-        int edgeCnt = 0;
-        for (int i = 0; i < m; i++) {
-            int u = nextInt();
-            int v = nextInt();
-            to[edgeCnt] = v;
-            next[edgeCnt] = head[u];
-            head[u] = edgeCnt++;
+        int[] firstEdgeByVertex = new int[vertexCount + 1];
+        int[] edgeTo = new int[2 * edgeCount];
+        int[] nextEdge = new int[2 * edgeCount];
+        Arrays.fill(firstEdgeByVertex, -1);
+        int directedEdgeCount = 0;
+        for (int i = 0; i < edgeCount; i++) {
+            int from = nextInt();
+            int to = nextInt();
+            edgeTo[directedEdgeCount] = to;
+            nextEdge[directedEdgeCount] = firstEdgeByVertex[from];
+            firstEdgeByVertex[from] = directedEdgeCount++;
 
-            to[edgeCnt] = u;
-            next[edgeCnt] = head[v];
-            head[v] = edgeCnt++;
+            edgeTo[directedEdgeCount] = from;
+            nextEdge[directedEdgeCount] = firstEdgeByVertex[to];
+            firstEdgeByVertex[to] = directedEdgeCount++;
         }
 
-        long[] cups = new long[k];
-        for (int i = 0; i < k; i++) {
-            cups[i] = nextLong();
+        long[] cupValues = new long[cupCount];
+        for (int i = 0; i < cupCount; i++) {
+            cupValues[i] = nextLong();
         }
 
-        int[] dist = bfs(n, head, to, next);
+        int[] distances = computeDistancesFromVertexOne(vertexCount, firstEdgeByVertex, edgeTo, nextEdge);
 
-        int[] answer = solve(dist, cups);
+        int[] answer = solve(distances, cupValues);
 
-        StringBuilder out = new StringBuilder();
-        for (int i = 1; i <= n; i++) {
-            out.append(answer[i]);
-            if (i + 1 <= n) {
-                out.append(' ');
+        StringBuilder output = new StringBuilder();
+        for (int vertex = 1; vertex <= vertexCount; vertex++) {
+            output.append(answer[vertex]);
+            if (vertex + 1 <= vertexCount) {
+                output.append(' ');
             }
         }
-        System.out.print(out.toString());
+        System.out.print(output.toString());
     }
 
-    private static int[] bfs(int n, int[] head, int[] to, int[] next) {
-        int[] dist = new int[n + 1];
-        Arrays.fill(dist, -1);
-        int[] q = new int[n];
-        int l = 0, r = 0;
-        q[r++] = 1;
-        dist[1] = 0;
-        while (l < r) {
-            int v = q[l++];
-            for (int e = head[v]; e != -1; e = next[e]) {
-                int u = to[e];
-                if (dist[u] == -1) {
-                    dist[u] = dist[v] + 1;
-                    q[r++] = u;
+    private static int[] computeDistancesFromVertexOne(int vertexCount, int[] firstEdgeByVertex,
+                                                        int[] edgeTo, int[] nextEdge) {
+        int[] distances = new int[vertexCount + 1];
+        Arrays.fill(distances, -1);
+        int[] queue = new int[vertexCount];
+        int queueLeft = 0, queueRight = 0;
+        queue[queueRight++] = 1;
+        distances[1] = 0;
+        while (queueLeft < queueRight) {
+            int vertex = queue[queueLeft++];
+            for (int edge = firstEdgeByVertex[vertex]; edge != -1; edge = nextEdge[edge]) {
+                int neighbor = edgeTo[edge];
+                if (distances[neighbor] == -1) {
+                    distances[neighbor] = distances[vertex] + 1;
+                    queue[queueRight++] = neighbor;
                 }
             }
         }
-        return dist;
+        return distances;
     }
 
-    private static int[] solve(int[] dist, long[] cups) {
-        int n = dist.length - 1;
-        int k = cups.length;
+    private static int[] solve(int[] distances, long[] cupValues) {
+        int vertexCount = distances.length - 1;
+        int cupCount = cupValues.length;
 
-        Arrays.sort(cups);
-        for (int i = 0, j = k - 1; i < j; i++, j--) {
-            long t = cups[i];
-            cups[i] = cups[j];
-            cups[j] = t;
+        Arrays.sort(cupValues);
+        for (int left = 0, right = cupCount - 1; left < right; left++, right--) {
+            long temp = cupValues[left];
+            cupValues[left] = cupValues[right];
+            cupValues[right] = temp;
         }
 
-        long[] pref = new long[k + 1];
-        long[] minEven = new long[k + 1];
-        long[] minOdd = new long[k + 1];
+        long[] prefixSum = new long[cupCount + 1];
+        long[] minEven = new long[cupCount + 1];
+        long[] minOdd = new long[cupCount + 1];
         final long INF = Long.MAX_VALUE / 4;
         minEven[0] = minOdd[0] = INF;
-        for (int i = 1; i <= k; i++) {
-            pref[i] = pref[i - 1] + cups[i - 1];
-            if ((cups[i - 1] & 1L) == 0L) {
-                minEven[i] = Math.min(minEven[i - 1], cups[i - 1]);
+        for (int i = 1; i <= cupCount; i++) {
+            prefixSum[i] = prefixSum[i - 1] + cupValues[i - 1];
+            if ((cupValues[i - 1] & 1L) == 0L) {
+                minEven[i] = Math.min(minEven[i - 1], cupValues[i - 1]);
                 minOdd[i] = minOdd[i - 1];
             } else {
-                minOdd[i] = Math.min(minOdd[i - 1], cups[i - 1]);
+                minOdd[i] = Math.min(minOdd[i - 1], cupValues[i - 1]);
                 minEven[i] = minEven[i - 1];
             }
         }
 
-        long[] maxEvenSuf = new long[k + 1];
-        long[] maxOddSuf = new long[k + 1];
-        maxEvenSuf[k] = maxOddSuf[k] = -1;
-        for (int i = k - 1; i >= 0; i--) {
-            long val = cups[i];
-            if ((val & 1L) == 0L) {
-                maxEvenSuf[i] = Math.max(maxEvenSuf[i + 1], val);
-                maxOddSuf[i] = maxOddSuf[i + 1];
+        long[] maxEvenSuffix = new long[cupCount + 1];
+        long[] maxOddSuffix = new long[cupCount + 1];
+        maxEvenSuffix[cupCount] = maxOddSuffix[cupCount] = -1;
+        for (int i = cupCount - 1; i >= 0; i--) {
+            long value = cupValues[i];
+            if ((value & 1L) == 0L) {
+                maxEvenSuffix[i] = Math.max(maxEvenSuffix[i + 1], value);
+                maxOddSuffix[i] = maxOddSuffix[i + 1];
             } else {
-                maxOddSuf[i] = Math.max(maxOddSuf[i + 1], val);
-                maxEvenSuf[i] = maxEvenSuf[i + 1];
+                maxOddSuffix[i] = Math.max(maxOddSuffix[i + 1], value);
+                maxEvenSuffix[i] = maxEvenSuffix[i + 1];
             }
         }
 
-        long[] bestEven = new long[k + 1];
-        long[] bestOdd = new long[k + 1];
+        long[] bestEven = new long[cupCount + 1];
+        long[] bestOdd = new long[cupCount + 1];
         Arrays.fill(bestEven, -1);
         Arrays.fill(bestOdd, -1);
-        for (int x = 0; x <= k; x++) {
-            long sum = pref[x];
-            bestEven[x] = bestWithParity(sum, 0, x, minEven, minOdd, maxEvenSuf, maxOddSuf, INF);
-            bestOdd[x] = bestWithParity(sum, 1, x, minEven, minOdd, maxEvenSuf, maxOddSuf, INF);
+        for (int chosenCupCount = 0; chosenCupCount <= cupCount; chosenCupCount++) {
+            long currentSum = prefixSum[chosenCupCount];
+            bestEven[chosenCupCount] =
+                    bestWithParity(currentSum, 0, chosenCupCount, minEven, minOdd, maxEvenSuffix, maxOddSuffix, INF);
+            bestOdd[chosenCupCount] =
+                    bestWithParity(currentSum, 1, chosenCupCount, minEven, minOdd, maxEvenSuffix, maxOddSuffix, INF);
         }
 
-        for (int i = 1; i <= k; i++) {
+        for (int i = 1; i <= cupCount; i++) {
             if (bestEven[i] < bestEven[i - 1]) {
                 bestEven[i] = bestEven[i - 1];
             }
@@ -129,51 +132,51 @@ public class Main {
             }
         }
 
-        int[] ans = new int[n + 1];
-        for (int v = 1; v <= n; v++) {
-            int d = dist[v];
-            if (d == -1) {
-                ans[v] = -1;
+        int[] minRequiredCups = new int[vertexCount + 1];
+        for (int vertex = 1; vertex <= vertexCount; vertex++) {
+            int distance = distances[vertex];
+            if (distance == -1) {
+                minRequiredCups[vertex] = -1;
                 continue;
             }
-            int parity = d & 1;
-            long[] arr = parity == 0 ? bestEven : bestOdd;
-            int lo = 0, hi = k, res = -1;
-            while (lo <= hi) {
-                int mid = (lo + hi) >>> 1;
-                if (arr[mid] >= d) {
-                    res = mid;
-                    hi = mid - 1;
+            int distanceParity = distance & 1;
+            long[] bestByParity = distanceParity == 0 ? bestEven : bestOdd;
+            int left = 0, right = cupCount, answer = -1;
+            while (left <= right) {
+                int mid = (left + right) >>> 1;
+                if (bestByParity[mid] >= distance) {
+                    answer = mid;
+                    right = mid - 1;
                 } else {
-                    lo = mid + 1;
+                    left = mid + 1;
                 }
             }
-            ans[v] = res;
+            minRequiredCups[vertex] = answer;
         }
-        return ans;
+        return minRequiredCups;
     }
 
-    private static long bestWithParity(long sum, int needParity, int x,
+    private static long bestWithParity(long sum, int requiredParity, int chosenCupCount,
                                        long[] minEven, long[] minOdd,
-                                       long[] maxEvenSuf, long[] maxOddSuf,
+                                       long[] maxEvenSuffix, long[] maxOddSuffix,
                                        long INF) {
-        if (((sum ^ needParity) & 1L) == 0L) {
+        if (((sum ^ requiredParity) & 1L) == 0L) {
             return sum;
         }
         long best = -1;
-        if (needParity == 0) { // хотим чётную сумму
-            if (minOdd[x] != INF && maxEvenSuf[x] != -1) {
-                best = Math.max(best, sum - minOdd[x] + maxEvenSuf[x]);
+        if (requiredParity == 0) { // хотим чётную сумму
+            if (minOdd[chosenCupCount] != INF && maxEvenSuffix[chosenCupCount] != -1) {
+                best = Math.max(best, sum - minOdd[chosenCupCount] + maxEvenSuffix[chosenCupCount]);
             }
-            if (minEven[x] != INF && maxOddSuf[x] != -1) {
-                best = Math.max(best, sum - minEven[x] + maxOddSuf[x]);
+            if (minEven[chosenCupCount] != INF && maxOddSuffix[chosenCupCount] != -1) {
+                best = Math.max(best, sum - minEven[chosenCupCount] + maxOddSuffix[chosenCupCount]);
             }
         } else { // хотим нечётную сумму
-            if (minEven[x] != INF && maxOddSuf[x] != -1) {
-                best = Math.max(best, sum - minEven[x] + maxOddSuf[x]);
+            if (minEven[chosenCupCount] != INF && maxOddSuffix[chosenCupCount] != -1) {
+                best = Math.max(best, sum - minEven[chosenCupCount] + maxOddSuffix[chosenCupCount]);
             }
-            if (minOdd[x] != INF && maxEvenSuf[x] != -1) {
-                best = Math.max(best, sum - minOdd[x] + maxEvenSuf[x]);
+            if (minOdd[chosenCupCount] != INF && maxEvenSuffix[chosenCupCount] != -1) {
+                best = Math.max(best, sum - minOdd[chosenCupCount] + maxEvenSuffix[chosenCupCount]);
             }
         }
         return best;
@@ -184,12 +187,12 @@ public class Main {
         do {
             c = read();
         } while (c <= ' ' && c != -1);
-        int v = 0;
+        int value = 0;
         while (c > ' ') {
-            v = v * 10 + (c - '0');
+            value = value * 10 + (c - '0');
             c = read();
         }
-        return v;
+        return value;
     }
 
     private static long nextLong() throws Exception {
@@ -197,22 +200,22 @@ public class Main {
         do {
             c = read();
         } while (c <= ' ' && c != -1);
-        long v = 0;
+        long value = 0;
         while (c > ' ') {
-            v = v * 10 + (c - '0');
+            value = value * 10 + (c - '0');
             c = read();
         }
-        return v;
+        return value;
     }
 
     private static int read() throws Exception {
-        if (ptr >= len) {
-            len = System.in.read(BUFFER);
-            ptr = 0;
-            if (len <= 0) {
+        if (bufferPointer >= bufferLength) {
+            bufferLength = System.in.read(INPUT_BUFFER);
+            bufferPointer = 0;
+            if (bufferLength <= 0) {
                 return -1;
             }
         }
-        return BUFFER[ptr++];
+        return INPUT_BUFFER[bufferPointer++];
     }
 }

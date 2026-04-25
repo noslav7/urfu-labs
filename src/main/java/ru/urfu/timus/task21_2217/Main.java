@@ -8,28 +8,28 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(reader.readLine().trim());
-        String s = reader.readLine().trim();
+        int stringLength = Integer.parseInt(reader.readLine().trim());
+        String binaryString = reader.readLine().trim();
 
-        System.out.println(canMakePalindrome(n, s) ? "YES" : "NO");
+        System.out.println(canMakePalindrome(stringLength, binaryString) ? "YES" : "NO");
     }
 
-    private static boolean canMakePalindrome(int n, String s) {
-        List<Integer> onesInSource = collectOnePositions(s);
-        int k = onesInSource.size();
+    private static boolean canMakePalindrome(int stringLength, String binaryString) {
+        List<Integer> onePositions = collectOnePositions(binaryString);
+        int oneCount = onePositions.size();
 
         // В строке четной длины палиндром не может содержать нечетное число единиц.
-        if (n % 2 == 0 && k % 2 == 1) {
+        if (stringLength % 2 == 0 && oneCount % 2 == 1) {
             return false;
         }
 
-        int half = n / 2;
-        int center = half + 1; // 1-based позиция центра для нечетной длины
-        int pairs = k / 2;
-        boolean hasCenterOne = (n % 2 == 1 && k % 2 == 1);
+        int leftHalfLength = stringLength / 2;
+        int centerPosition = leftHalfLength + 1; // 1-based позиция центра для нечетной длины
+        int pairCount = oneCount / 2;
+        boolean hasCenterOne = (stringLength % 2 == 1 && oneCount % 2 == 1);
 
         // Если в центре должна быть единица, k/2+1-я единица обязана оказаться не правее центра.
-        if (hasCenterOne && onesInSource.get(pairs) > center) {
+        if (hasCenterOne && onePositions.get(pairCount) > centerPosition) {
             return false;
         }
 
@@ -38,23 +38,23 @@ public class Main {
         //   a_j >= p_j
         //   a_j <= n + 1 - p_{k-j+1}
         // и последовательность a_j должна быть строго возрастающей.
-        int prev = 0;
-        for (int j = 1; j <= pairs; j++) {
-            int leftBound = onesInSource.get(j - 1);
-            int rightBound = n + 1 - onesInSource.get(k - j);
+        int previousChosenPosition = 0;
+        for (int pairIndex = 1; pairIndex <= pairCount; pairIndex++) {
+            int leftBound = onePositions.get(pairIndex - 1);
+            int rightBound = stringLength + 1 - onePositions.get(oneCount - pairIndex);
 
             leftBound = Math.max(leftBound, 1);
-            rightBound = Math.min(rightBound, half);
+            rightBound = Math.min(rightBound, leftHalfLength);
 
             if (leftBound > rightBound) {
                 return false;
             }
 
-            int current = Math.max(leftBound, prev + 1);
-            if (current > rightBound) {
+            int chosenPosition = Math.max(leftBound, previousChosenPosition + 1);
+            if (chosenPosition > rightBound) {
                 return false;
             }
-            prev = current;
+            previousChosenPosition = chosenPosition;
         }
 
         return true;
