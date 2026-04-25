@@ -4,128 +4,131 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 
 public class Main {
-    private static int[] from;
-    private static int[] to;
-    private static int[] b1w;
-    private static int[] b2w;
-    private static int[] b1to;
-    private static int[] b1s;
-    private static int[] b2s;
-    private static int[] end;
-    private static boolean[] onStack;
-    private static int[] stack;
+    private static int[] edgeFrom;
+    private static int[] edgeTo;
+    private static int[] bestWeightByVertex;
+    private static int[] secondBestWeightByVertex;
+    private static int[] bestNextVertexByVertex;
+    private static int[] bestStateByVertex;
+    private static int[] secondBestStateByVertex;
+    private static int[] terminalVertexByState;
+    private static boolean[] isStateOnStack;
+    private static int[] stateStack;
 
     public static void main(String[] args) throws Exception {
-        FastScanner fs = new FastScanner();
-        int n = fs.nextInt();
-        int m = n - 1;
+        FastScanner scanner = new FastScanner();
+        int vertexCount = scanner.nextInt();
+        int undirectedEdgeCount = vertexCount - 1;
+        int directedStateCount = 2 * undirectedEdgeCount;
 
-        from = new int[2 * m];
-        to = new int[2 * m];
-        b1w = new int[n + 1];
-        b2w = new int[n + 1];
-        b1to = new int[n + 1];
-        b1s = new int[n + 1];
-        b2s = new int[n + 1];
+        edgeFrom = new int[directedStateCount];
+        edgeTo = new int[directedStateCount];
+        bestWeightByVertex = new int[vertexCount + 1];
+        secondBestWeightByVertex = new int[vertexCount + 1];
+        bestNextVertexByVertex = new int[vertexCount + 1];
+        bestStateByVertex = new int[vertexCount + 1];
+        secondBestStateByVertex = new int[vertexCount + 1];
         final int INF = Integer.MAX_VALUE;
-        for (int i = 1; i <= n; i++) {
-            b1w[i] = INF;
-            b2w[i] = INF;
-            b1s[i] = -1;
-            b2s[i] = -1;
+        for (int vertex = 1; vertex <= vertexCount; vertex++) {
+            bestWeightByVertex[vertex] = INF;
+            secondBestWeightByVertex[vertex] = INF;
+            bestStateByVertex[vertex] = -1;
+            secondBestStateByVertex[vertex] = -1;
         }
 
-        int ptr = 0;
-        for (int i = 0; i < m; i++) {
-            int u = fs.nextInt();
-            int v = fs.nextInt();
-            int l = fs.nextInt();
+        int stateIndex = 0;
+        for (int i = 0; i < undirectedEdgeCount; i++) {
+            int firstVertex = scanner.nextInt();
+            int secondVertex = scanner.nextInt();
+            int weight = scanner.nextInt();
 
-            from[ptr] = u;
-            to[ptr] = v;
-            relax(u, v, ptr, l);
-            ptr++;
+            edgeFrom[stateIndex] = firstVertex;
+            edgeTo[stateIndex] = secondVertex;
+            registerTransition(firstVertex, secondVertex, stateIndex, weight);
+            stateIndex++;
 
-            from[ptr] = v;
-            to[ptr] = u;
-            relax(v, u, ptr, l);
-            ptr++;
+            edgeFrom[stateIndex] = secondVertex;
+            edgeTo[stateIndex] = firstVertex;
+            registerTransition(secondVertex, firstVertex, stateIndex, weight);
+            stateIndex++;
         }
 
-        end = new int[2 * m];
-        onStack = new boolean[2 * m];
-        stack = new int[2 * m];
+        terminalVertexByState = new int[directedStateCount];
+        isStateOnStack = new boolean[directedStateCount];
+        stateStack = new int[directedStateCount];
 
-        StringBuilder out = new StringBuilder();
-        for (int start = 1; start <= n; start++) {
-            int first = b1s[start];
-            int answer = (first == -1) ? start : solve(first);
+        StringBuilder output = new StringBuilder();
+        for (int startVertex = 1; startVertex <= vertexCount; startVertex++) {
+            int firstState = bestStateByVertex[startVertex];
+            int answerVertex = (firstState == -1) ? startVertex : resolveTerminalVertex(firstState);
 
-            if (start > 1) {
-                out.append(' ');
+            if (startVertex > 1) {
+                output.append(' ');
             }
-            out.append(answer);
+            output.append(answerVertex);
         }
-        System.out.println(out);
+        System.out.println(output);
     }
 
-    private static void relax(int v, int u, int s, int w) {
-        if (w < b1w[v]) {
-            b2w[v] = b1w[v];
-            b2s[v] = b1s[v];
-            b1w[v] = w;
-            b1to[v] = u;
-            b1s[v] = s;
-        } else if (w < b2w[v]) {
-            b2w[v] = w;
-            b2s[v] = s;
+    private static void registerTransition(int fromVertex, int toVertex, int state, int weight) {
+        if (weight < bestWeightByVertex[fromVertex]) {
+            secondBestWeightByVertex[fromVertex] = bestWeightByVertex[fromVertex];
+            secondBestStateByVertex[fromVertex] = bestStateByVertex[fromVertex];
+            bestWeightByVertex[fromVertex] = weight;
+            bestNextVertexByVertex[fromVertex] = toVertex;
+            bestStateByVertex[fromVertex] = state;
+        } else if (weight < secondBestWeightByVertex[fromVertex]) {
+            secondBestWeightByVertex[fromVertex] = weight;
+            secondBestStateByVertex[fromVertex] = state;
         }
     }
 
-    private static int nextState(int s) {
-        int v = to[s];
-        if (b1s[v] == -1) {
+    private static int getNextState(int currentState) {
+        int currentVertex = edgeTo[currentState];
+        if (bestStateByVertex[currentVertex] == -1) {
             return -1;
         }
-        return (b1to[v] != from[s]) ? b1s[v] : b2s[v];
+        return (bestNextVertexByVertex[currentVertex] != edgeFrom[currentState])
+                ? bestStateByVertex[currentVertex]
+                : secondBestStateByVertex[currentVertex];
     }
 
-    private static int solve(int start) {
-        if (end[start] != 0) {
-            return end[start];
+    private static int resolveTerminalVertex(int startState) {
+        if (terminalVertexByState[startState] != 0) {
+            return terminalVertexByState[startState];
         }
 
-        int top = 0;
-        int cur = start;
-        int ans = 0;
+        int stackSize = 0;
+        int currentState = startState;
+        int answerVertex = 0;
 
         while (true) {
-            if (end[cur] != 0) {
-                ans = end[cur];
+            if (terminalVertexByState[currentState] != 0) {
+                answerVertex = terminalVertexByState[currentState];
                 break;
             }
-            if (onStack[cur]) {
-                ans = to[cur];
+            if (isStateOnStack[currentState]) {
+                answerVertex = edgeTo[currentState];
                 break;
             }
 
-            onStack[cur] = true;
-            stack[top++] = cur;
+            isStateOnStack[currentState] = true;
+            stateStack[stackSize++] = currentState;
 
-            int nxt = nextState(cur);
-            if (nxt == -1) {
-                ans = to[cur];
+            int nextState = getNextState(currentState);
+            if (nextState == -1) {
+                answerVertex = edgeTo[currentState];
                 break;
             }
-            cur = nxt;
+            currentState = nextState;
         }
 
-        while (top > 0) {
-            int s = stack[--top];
-            onStack[s] = false;
-            end[s] = ans;
+        while (stackSize > 0) {
+            int state = stateStack[--stackSize];
+            isStateOnStack[state] = false;
+            terminalVertexByState[state] = answerVertex;
         }
-        return ans;
+        return answerVertex;
     }
 
     private static class FastScanner {

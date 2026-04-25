@@ -11,29 +11,29 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        int n = nextInt(reader);
+        int maxValue = nextInt(reader);
 
-        int[] phiPrefix = buildPhiPrefix(n);
-        int[] invPrefix = buildInvPrefix(n);
+        int[] phiPrefix = buildPhiPrefix(maxValue);
+        int[] inversePrefix = buildInversePrefix(maxValue);
 
-        long sum = 0L;
+        long weightedSum = 0L;
         int left = 1;
-        while (left <= n) {
-            int value = n / left;
-            int right = n / value;
+        while (left <= maxValue) {
+            int quotient = maxValue / left;
+            int right = maxValue / quotient;
 
-            int invRange = invPrefix[right] - invPrefix[left - 1];
-            if (invRange < 0) {
-                invRange += MOD;
+            int inverseSumOnSegment = inversePrefix[right] - inversePrefix[left - 1];
+            if (inverseSumOnSegment < 0) {
+                inverseSumOnSegment += MOD;
             }
 
-            sum = (sum + (long) phiPrefix[value] * invRange) % MOD;
+            weightedSum = (weightedSum + (long) phiPrefix[quotient] * inverseSumOnSegment) % MOD;
 
             left = right + 1;
         }
 
-        long pairs = (long) n * (n + 1) / 2 % MOD;
-        long answer = sum * modPow(pairs, MOD - 2) % MOD;
+        long pairCount = (long) maxValue * (maxValue + 1) / 2 % MOD;
+        long answer = weightedSum * modPow(pairCount, MOD - 2) % MOD;
         System.out.println(answer);
     }
 
@@ -76,16 +76,16 @@ public class Main {
         return phi;
     }
 
-    private static int[] buildInvPrefix(int n) {
-        int[] inv = new int[n + 1];
+    private static int[] buildInversePrefix(int n) {
+        int[] inverse = new int[n + 1];
         int[] prefix = new int[n + 1];
         if (n >= 1) {
-            inv[1] = 1;
+            inverse[1] = 1;
             prefix[1] = 1;
         }
         for (int i = 2; i <= n; i++) {
-            inv[i] = (int) (MOD - (long) (MOD / i) * inv[MOD % i] % MOD);
-            int next = prefix[i - 1] + inv[i];
+            inverse[i] = (int) (MOD - (long) (MOD / i) * inverse[MOD % i] % MOD);
+            int next = prefix[i - 1] + inverse[i];
             if (next >= MOD) {
                 next -= MOD;
             }

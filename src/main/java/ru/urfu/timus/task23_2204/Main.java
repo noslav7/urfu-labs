@@ -10,80 +10,87 @@ public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        int n = nextInt(reader);
-        int m = nextInt(reader);
+        int examCount = nextInt(reader);
+        int tripCount = nextInt(reader);
 
-        long[] fl = new long[n];
-        long[] fr = new long[n];
-        long[] sl = new long[n];
-        long[] sr = new long[n];
+        long[] firstIntervalLeft = new long[examCount];
+        long[] firstIntervalRight = new long[examCount];
+        long[] secondIntervalLeft = new long[examCount];
+        long[] secondIntervalRight = new long[examCount];
 
-        for (int i = 0; i < n; i++) {
-            fl[i] = nextLong(reader);
-            fr[i] = nextLong(reader);
-            sl[i] = nextLong(reader);
-            sr[i] = nextLong(reader);
+        for (int i = 0; i < examCount; i++) {
+            firstIntervalLeft[i] = nextLong(reader);
+            firstIntervalRight[i] = nextLong(reader);
+            secondIntervalLeft[i] = nextLong(reader);
+            secondIntervalRight[i] = nextLong(reader);
         }
 
-        long[] tripL = new long[m];
-        long[] tripR = new long[m];
-        for (int i = 0; i < m; i++) {
-            tripL[i] = nextLong(reader);
-            tripR[i] = nextLong(reader);
+        long[] tripStart = new long[tripCount];
+        long[] tripEnd = new long[tripCount];
+        for (int i = 0; i < tripCount; i++) {
+            tripStart[i] = nextLong(reader);
+            tripEnd[i] = nextLong(reader);
         }
 
-        long[][] c = new long[n][2];
-        for (int i = 0; i < n; i++) {
-            c[i][0] = countIntersect(tripL, tripR, fl[i], fr[i]);
-            c[i][1] = countIntersect(tripL, tripR, sl[i], sr[i]);
+        long[][] blockedTripsByOption = new long[examCount][2];
+        for (int i = 0; i < examCount; i++) {
+            blockedTripsByOption[i][0] =
+                    countIntersect(tripStart, tripEnd, firstIntervalLeft[i], firstIntervalRight[i]);
+            blockedTripsByOption[i][1] =
+                    countIntersect(tripStart, tripEnd, secondIntervalLeft[i], secondIntervalRight[i]);
         }
 
-        long[][][] d = new long[Math.max(0, n - 1)][2][2];
-        for (int i = 0; i + 1 < n; i++) {
-            d[i][0][0] = countIntersectBoth(tripL, tripR, fr[i], fl[i + 1]);
-            d[i][0][1] = countIntersectBoth(tripL, tripR, fr[i], sl[i + 1]);
-            d[i][1][0] = countIntersectBoth(tripL, tripR, sr[i], fl[i + 1]);
-            d[i][1][1] = countIntersectBoth(tripL, tripR, sr[i], sl[i + 1]);
+        long[][][] overlapBlockedTrips = new long[Math.max(0, examCount - 1)][2][2];
+        for (int i = 0; i + 1 < examCount; i++) {
+            overlapBlockedTrips[i][0][0] =
+                    countIntersectBoth(tripStart, tripEnd, firstIntervalRight[i], firstIntervalLeft[i + 1]);
+            overlapBlockedTrips[i][0][1] =
+                    countIntersectBoth(tripStart, tripEnd, firstIntervalRight[i], secondIntervalLeft[i + 1]);
+            overlapBlockedTrips[i][1][0] =
+                    countIntersectBoth(tripStart, tripEnd, secondIntervalRight[i], firstIntervalLeft[i + 1]);
+            overlapBlockedTrips[i][1][1] =
+                    countIntersectBoth(tripStart, tripEnd, secondIntervalRight[i], secondIntervalLeft[i + 1]);
         }
 
         // dp[x] = минимальное число "потерянных" поездок после обработки экзаменов до i,
         // если для i-го экзамена выбран вариант x (0 - первый, 1 - второй).
-        long[] dp = new long[2];
-        dp[0] = c[0][0];
-        dp[1] = c[0][1];
+        long[] minBlockedUpToExam = new long[2];
+        minBlockedUpToExam[0] = blockedTripsByOption[0][0];
+        minBlockedUpToExam[1] = blockedTripsByOption[0][1];
 
-        for (int i = 1; i < n; i++) {
-            long[] ndp = new long[2];
-            ndp[0] = Math.min(
-                    dp[0] + c[i][0] - d[i - 1][0][0],
-                    dp[1] + c[i][0] - d[i - 1][1][0]
+        for (int i = 1; i < examCount; i++) {
+            long[] nextMinBlocked = new long[2];
+            nextMinBlocked[0] = Math.min(
+                    minBlockedUpToExam[0] + blockedTripsByOption[i][0] - overlapBlockedTrips[i - 1][0][0],
+                    minBlockedUpToExam[1] + blockedTripsByOption[i][0] - overlapBlockedTrips[i - 1][1][0]
             );
-            ndp[1] = Math.min(
-                    dp[0] + c[i][1] - d[i - 1][0][1],
-                    dp[1] + c[i][1] - d[i - 1][1][1]
+            nextMinBlocked[1] = Math.min(
+                    minBlockedUpToExam[0] + blockedTripsByOption[i][1] - overlapBlockedTrips[i - 1][0][1],
+                    minBlockedUpToExam[1] + blockedTripsByOption[i][1] - overlapBlockedTrips[i - 1][1][1]
             );
-            dp = ndp;
+            minBlockedUpToExam = nextMinBlocked;
         }
 
-        long minBlocked = Math.min(dp[0], dp[1]);
-        long maxTrips = m - minBlocked;
-        System.out.println(maxTrips);
+        long minBlockedTrips = Math.min(minBlockedUpToExam[0], minBlockedUpToExam[1]);
+        long maxAvailableTrips = tripCount - minBlockedTrips;
+        System.out.println(maxAvailableTrips);
     }
 
-    private static long countIntersect(long[] tripL, long[] tripR, long L, long R) {
+    private static long countIntersect(long[] tripStart, long[] tripEnd, long left, long right) {
         // Кол-во поездок с пересечением [L, R]:
         // starts <= R  минус  ends < L.
-        int a = upperBound(tripL, R);
-        int b = lowerBound(tripR, L);
-        return a - b;
+        int startsNotAfterRight = upperBound(tripStart, right);
+        int endsBeforeLeft = lowerBound(tripEnd, left);
+        return startsNotAfterRight - endsBeforeLeft;
     }
 
-    private static long countIntersectBoth(long[] tripL, long[] tripR, long rightOfFirst, long leftOfSecond) {
+    private static long countIntersectBoth(long[] tripStart, long[] tripEnd,
+                                           long firstIntervalRight, long secondIntervalLeft) {
         // Поездка пересекает оба соседних интервала тогда и только тогда,
         // когда start <= rightOfFirst и end >= leftOfSecond.
-        int a = upperBound(tripL, rightOfFirst); // индексы [0..a-1]
-        int b = lowerBound(tripR, leftOfSecond); // индексы [b..m-1]
-        return Math.max(0, a - b);
+        int startsNotAfterFirstRight = upperBound(tripStart, firstIntervalRight); // [0..x-1]
+        int endsBeforeSecondLeft = lowerBound(tripEnd, secondIntervalLeft); // [0..x-1]
+        return Math.max(0, startsNotAfterFirstRight - endsBeforeSecondLeft);
     }
 
     private static int lowerBound(long[] arr, long x) {

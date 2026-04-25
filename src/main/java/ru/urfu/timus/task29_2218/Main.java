@@ -6,35 +6,35 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Main {
-    private static final int BUF = 1 << 16;
-    private static final byte[] BUFFER = new byte[BUF];
-    private static int len = 0;
-    private static int ptr = 0;
+    private static final int INPUT_BUFFER_SIZE = 1 << 16;
+    private static final byte[] INPUT_BUFFER = new byte[INPUT_BUFFER_SIZE];
+    private static int bufferLength = 0;
+    private static int bufferPointer = 0;
 
     private static class Point {
-        final long u;
-        final int vIdx;
+        final long transformedU;
+        final int transformedVIndex;
 
-        Point(long u, int vIdx) {
-            this.u = u;
-            this.vIdx = vIdx;
+        Point(long transformedU, int transformedVIndex) {
+            this.transformedU = transformedU;
+            this.transformedVIndex = transformedVIndex;
         }
     }
 
     private static class Event {
         final long uLimit;
-        final int lIdx;
-        final int rIdx;
+        final int leftVIndex;
+        final int rightVIndex;
         final int queryId;
-        final int which; // 0 -> radius d, 1 -> radius d-1
+        final int radiusType; // 0 -> radius d, 1 -> radius d-1
         final int sign;  // +1 or -1
 
-        Event(long uLimit, int lIdx, int rIdx, int queryId, int which, int sign) {
+        Event(long uLimit, int leftVIndex, int rightVIndex, int queryId, int radiusType, int sign) {
             this.uLimit = uLimit;
-            this.lIdx = lIdx;
-            this.rIdx = rIdx;
+            this.leftVIndex = leftVIndex;
+            this.rightVIndex = rightVIndex;
             this.queryId = queryId;
-            this.which = which;
+            this.radiusType = radiusType;
             this.sign = sign;
         }
     }
@@ -55,123 +55,123 @@ public class Main {
         }
 
         int sumPrefix(int idx) {
-            int res = 0;
+            int result = 0;
             for (int i = idx; i > 0; i -= i & -i) {
-                res += bit[i];
+                result += bit[i];
             }
-            return res;
+            return result;
         }
 
-        int rangeSum(int l, int r) {
-            if (l > r) return 0;
-            return sumPrefix(r) - sumPrefix(l - 1);
+        int rangeSum(int left, int right) {
+            if (left > right) return 0;
+            return sumPrefix(right) - sumPrefix(left - 1);
         }
     }
 
     public static void main(String[] args) throws Exception {
-        int n = nextInt();
-        long[] uPts = new long[n];
-        long[] vPts = new long[n];
-        List<Long> vVals = new ArrayList<>(2 * n);
-        for (int i = 0; i < n; i++) {
+        int pointCount = nextInt();
+        long[] transformedUByPoint = new long[pointCount];
+        long[] transformedVByPoint = new long[pointCount];
+        List<Long> allVValues = new ArrayList<>(2 * pointCount);
+        for (int i = 0; i < pointCount; i++) {
             long x = nextLong();
             long y = nextLong();
-            long u = x + y;
-            long v = x - y;
-            uPts[i] = u;
-            vPts[i] = v;
-            vVals.add(v);
+            long transformedU = x + y;
+            long transformedV = x - y;
+            transformedUByPoint[i] = transformedU;
+            transformedVByPoint[i] = transformedV;
+            allVValues.add(transformedV);
         }
 
-        int q = nextInt();
-        long[] uq = new long[q];
-        long[] vq = new long[q];
-        long[] d = new long[q];
-        for (int i = 0; i < q; i++) {
+        int queryCount = nextInt();
+        long[] queryU = new long[queryCount];
+        long[] queryV = new long[queryCount];
+        long[] queryRadius = new long[queryCount];
+        for (int i = 0; i < queryCount; i++) {
             long x = nextLong();
             long y = nextLong();
-            long dist = nextLong();
-            uq[i] = x + y;
-            vq[i] = x - y;
-            d[i] = dist;
-            vVals.add(vq[i] - dist);
-            vVals.add(vq[i] + dist);
-            if (dist > 0) {
-                long d0 = dist - 1;
-                vVals.add(vq[i] - d0);
-                vVals.add(vq[i] + d0);
+            long radius = nextLong();
+            queryU[i] = x + y;
+            queryV[i] = x - y;
+            queryRadius[i] = radius;
+            allVValues.add(queryV[i] - radius);
+            allVValues.add(queryV[i] + radius);
+            if (radius > 0) {
+                long reducedRadius = radius - 1;
+                allVValues.add(queryV[i] - reducedRadius);
+                allVValues.add(queryV[i] + reducedRadius);
             }
         }
 
-        long[] vUnique = vVals.stream().distinct().sorted().mapToLong(Long::longValue).toArray();
+        long[] sortedUniqueV = allVValues.stream().distinct().sorted().mapToLong(Long::longValue).toArray();
 
-        Point[] points = new Point[n];
-        for (int i = 0; i < n; i++) {
-            int vIdx = lowerBound(vUnique, vPts[i]) + 1; // Fenwick is 1-based
-            points[i] = new Point(uPts[i], vIdx);
+        Point[] points = new Point[pointCount];
+        for (int i = 0; i < pointCount; i++) {
+            int vIndex = lowerBound(sortedUniqueV, transformedVByPoint[i]) + 1; // Fenwick is 1-based
+            points[i] = new Point(transformedUByPoint[i], vIndex);
         }
-        Arrays.sort(points, Comparator.comparingLong(p -> p.u));
+        Arrays.sort(points, Comparator.comparingLong(point -> point.transformedU));
 
-        List<Event> events = new ArrayList<>(2 * q * 2);
-        for (int i = 0; i < q; i++) {
-            addEvents(events, uq[i], vq[i], d[i], i, 0, vUnique);
-            if (d[i] > 0) {
-                addEvents(events, uq[i], vq[i], d[i] - 1, i, 1, vUnique);
+        List<Event> events = new ArrayList<>(2 * queryCount * 2);
+        for (int i = 0; i < queryCount; i++) {
+            addEvents(events, queryU[i], queryV[i], queryRadius[i], i, 0, sortedUniqueV);
+            if (queryRadius[i] > 0) {
+                addEvents(events, queryU[i], queryV[i], queryRadius[i] - 1, i, 1, sortedUniqueV);
             }
         }
         events.sort(Comparator.comparingLong(e -> e.uLimit));
 
-        Fenwick fenwick = new Fenwick(vUnique.length);
-        long[][] res = new long[q][2];
-        int ptrPts = 0;
-        for (Event ev : events) {
-            while (ptrPts < n && points[ptrPts].u <= ev.uLimit) {
-                fenwick.add(points[ptrPts].vIdx, 1);
-                ptrPts++;
+        Fenwick fenwick = new Fenwick(sortedUniqueV.length);
+        long[][] partialCounts = new long[queryCount][2];
+        int pointPointer = 0;
+        for (Event event : events) {
+            while (pointPointer < pointCount && points[pointPointer].transformedU <= event.uLimit) {
+                fenwick.add(points[pointPointer].transformedVIndex, 1);
+                pointPointer++;
             }
-            int cnt = fenwick.rangeSum(ev.lIdx, ev.rIdx);
-            res[ev.queryId][ev.which] += ev.sign * cnt;
+            int pointsInRectangle = fenwick.rangeSum(event.leftVIndex, event.rightVIndex);
+            partialCounts[event.queryId][event.radiusType] += event.sign * pointsInRectangle;
         }
 
-        StringBuilder out = new StringBuilder();
-        for (int i = 0; i < q; i++) {
-            long ans = res[i][0] - res[i][1];
-            out.append(ans);
-            if (i + 1 < q) out.append('\n');
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < queryCount; i++) {
+            long exactDistanceCount = partialCounts[i][0] - partialCounts[i][1];
+            output.append(exactDistanceCount);
+            if (i + 1 < queryCount) output.append('\n');
         }
-        System.out.print(out.toString());
+        System.out.print(output.toString());
     }
 
-    private static void addEvents(List<Event> events, long uq, long vq, long rad,
-                                  int id, int which, long[] vUnique) {
-        long left = uq - rad;
-        long right = uq + rad;
-        long vLow = vq - rad;
-        long vHigh = vq + rad;
-        int lIdx = lowerBound(vUnique, vLow) + 1;
-        int rIdx = upperBound(vUnique, vHigh); // returns 1-based inclusive index
-        events.add(new Event(right, lIdx, rIdx, id, which, +1));
-        events.add(new Event(left - 1, lIdx, rIdx, id, which, -1));
+    private static void addEvents(List<Event> events, long queryU, long queryV, long radius,
+                                  int queryId, int radiusType, long[] sortedUniqueV) {
+        long leftULimit = queryU - radius;
+        long rightULimit = queryU + radius;
+        long minV = queryV - radius;
+        long maxV = queryV + radius;
+        int leftVIndex = lowerBound(sortedUniqueV, minV) + 1;
+        int rightVIndex = upperBound(sortedUniqueV, maxV); // returns 1-based inclusive index
+        events.add(new Event(rightULimit, leftVIndex, rightVIndex, queryId, radiusType, +1));
+        events.add(new Event(leftULimit - 1, leftVIndex, rightVIndex, queryId, radiusType, -1));
     }
 
     private static int lowerBound(long[] arr, long x) {
-        int l = 0, r = arr.length;
-        while (l < r) {
-            int m = (l + r) >>> 1;
-            if (arr[m] < x) l = m + 1;
-            else r = m;
+        int left = 0, right = arr.length;
+        while (left < right) {
+            int mid = (left + right) >>> 1;
+            if (arr[mid] < x) left = mid + 1;
+            else right = mid;
         }
-        return l;
+        return left;
     }
 
     private static int upperBound(long[] arr, long x) {
-        int l = 0, r = arr.length;
-        while (l < r) {
-            int m = (l + r) >>> 1;
-            if (arr[m] <= x) l = m + 1;
-            else r = m;
+        int left = 0, right = arr.length;
+        while (left < right) {
+            int mid = (left + right) >>> 1;
+            if (arr[mid] <= x) left = mid + 1;
+            else right = mid;
         }
-        return l; // 0-based
+        return left; // 0-based
     }
 
     private static int nextInt() throws Exception {
@@ -184,12 +184,12 @@ public class Main {
             sign = -1;
             c = read();
         }
-        int v = 0;
+        int value = 0;
         while (c > ' ') {
-            v = v * 10 + (c - '0');
+            value = value * 10 + (c - '0');
             c = read();
         }
-        return v * sign;
+        return value * sign;
     }
 
     private static long nextLong() throws Exception {
@@ -202,20 +202,20 @@ public class Main {
             sign = -1;
             c = read();
         }
-        long v = 0;
+        long value = 0;
         while (c > ' ') {
-            v = v * 10 + (c - '0');
+            value = value * 10 + (c - '0');
             c = read();
         }
-        return v * sign;
+        return value * sign;
     }
 
     private static int read() throws Exception {
-        if (ptr >= len) {
-            len = System.in.read(BUFFER);
-            ptr = 0;
-            if (len <= 0) return -1;
+        if (bufferPointer >= bufferLength) {
+            bufferLength = System.in.read(INPUT_BUFFER);
+            bufferPointer = 0;
+            if (bufferLength <= 0) return -1;
         }
-        return BUFFER[ptr++];
+        return INPUT_BUFFER[bufferPointer++];
     }
 }

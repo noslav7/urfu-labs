@@ -6,42 +6,42 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-    private static int[] parent;
-    private static int[] size;
-    private static boolean[] active;
+    private static int[] dsuParent;
+    private static int[] componentSize;
+    private static boolean[] isActive;
     private static long levelCost;
     private static StringTokenizer tokenizer;
 
     public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        int n = nextInt(reader);
-        int[] l = new int[n];
-        for (int i = 0; i < n; i++) {
-            l[i] = nextInt(reader);
+        int columnCount = nextInt(reader);
+        int[] heights = new int[columnCount];
+        for (int i = 0; i < columnCount; i++) {
+            heights[i] = nextInt(reader);
         }
 
-        Integer[] order = new Integer[n];
-        for (int i = 0; i < n; i++) {
+        Integer[] order = new Integer[columnCount];
+        for (int i = 0; i < columnCount; i++) {
             order[i] = i;
         }
-        Arrays.sort(order, (a, b) -> Integer.compare(l[b], l[a]));
+        Arrays.sort(order, (a, b) -> Integer.compare(heights[b], heights[a]));
 
-        parent = new int[n];
-        size = new int[n];
-        active = new boolean[n];
+        dsuParent = new int[columnCount];
+        componentSize = new int[columnCount];
+        isActive = new boolean[columnCount];
         levelCost = 0L;
 
         long answer = 0L;
-        int ptr = 0;
-        int currentHeight = l[order[0]];
+        int orderPointer = 0;
+        int currentHeight = heights[order[0]];
 
         while (currentHeight > 0) {
-            while (ptr < n && l[order[ptr]] == currentHeight) {
-                activate(order[ptr], n);
-                ptr++;
+            while (orderPointer < columnCount && heights[order[orderPointer]] == currentHeight) {
+                activateIndex(order[orderPointer], columnCount);
+                orderPointer++;
             }
 
-            int nextHeight = (ptr < n) ? l[order[ptr]] : 0;
+            int nextHeight = (orderPointer < columnCount) ? heights[order[orderPointer]] : 0;
             answer += (long) (currentHeight - nextHeight) * levelCost;
             currentHeight = nextHeight;
         }
@@ -49,48 +49,48 @@ public class Main {
         System.out.println(answer);
     }
 
-    private static void activate(int index, int n) {
-        active[index] = true;
-        parent[index] = index;
-        size[index] = 1;
+    private static void activateIndex(int index, int totalCount) {
+        isActive[index] = true;
+        dsuParent[index] = index;
+        componentSize[index] = 1;
         levelCost += contribution(1);
 
-        if (index > 0 && active[index - 1]) {
+        if (index > 0 && isActive[index - 1]) {
             unite(index, index - 1);
         }
-        if (index + 1 < n && active[index + 1]) {
+        if (index + 1 < totalCount && isActive[index + 1]) {
             unite(index, index + 1);
         }
     }
 
-    private static void unite(int a, int b) {
-        int ra = find(a);
-        int rb = find(b);
-        if (ra == rb) {
+    private static void unite(int firstIndex, int secondIndex) {
+        int firstRoot = findRoot(firstIndex);
+        int secondRoot = findRoot(secondIndex);
+        if (firstRoot == secondRoot) {
             return;
         }
 
-        levelCost -= contribution(size[ra]);
-        levelCost -= contribution(size[rb]);
+        levelCost -= contribution(componentSize[firstRoot]);
+        levelCost -= contribution(componentSize[secondRoot]);
 
-        if (size[ra] < size[rb]) {
-            int tmp = ra;
-            ra = rb;
-            rb = tmp;
+        if (componentSize[firstRoot] < componentSize[secondRoot]) {
+            int temp = firstRoot;
+            firstRoot = secondRoot;
+            secondRoot = temp;
         }
 
-        parent[rb] = ra;
-        size[ra] += size[rb];
+        dsuParent[secondRoot] = firstRoot;
+        componentSize[firstRoot] += componentSize[secondRoot];
 
-        levelCost += contribution(size[ra]);
+        levelCost += contribution(componentSize[firstRoot]);
     }
 
-    private static int find(int v) {
-        if (parent[v] == v) {
-            return v;
+    private static int findRoot(int vertex) {
+        if (dsuParent[vertex] == vertex) {
+            return vertex;
         }
-        parent[v] = find(parent[v]);
-        return parent[v];
+        dsuParent[vertex] = findRoot(dsuParent[vertex]);
+        return dsuParent[vertex];
     }
 
     private static long contribution(int length) {

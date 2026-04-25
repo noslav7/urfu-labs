@@ -11,34 +11,34 @@ public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        int n = nextInt(reader);
-        int k = nextInt(reader);
+        int floorCount = nextInt(reader);
+        int elevatorCount = nextInt(reader);
 
-        if (n == 1) {
+        if (floorCount == 1) {
             System.out.println(-1);
             return;
         }
 
-        int[] diff = new int[n + 2];
-        for (int i = 0; i < k; i++) {
-            int l = nextInt(reader);
-            int r = nextInt(reader);
+        int[] boundaryDelta = new int[floorCount + 2];
+        for (int i = 0; i < elevatorCount; i++) {
+            int fromFloor = nextInt(reader);
+            int toFloor = nextInt(reader);
 
             // Лифт [l, r] пересекает все "границы" i между этажами i и i+1, где l <= i < r.
-            if (l < r) {
-                diff[l]++;
-                diff[r]--;
+            if (fromFloor < toFloor) {
+                boundaryDelta[fromFloor]++;
+                boundaryDelta[toFloor]--;
             }
         }
 
-        int current = 0;
-        int answer = Integer.MAX_VALUE;
-        for (int i = 1; i <= n - 1; i++) {
-            current += diff[i];
-            answer = Math.min(answer, current);
+        int activeElevatorsOnBoundary = 0;
+        int minElevatorsAcrossBoundary = Integer.MAX_VALUE;
+        for (int boundary = 1; boundary <= floorCount - 1; boundary++) {
+            activeElevatorsOnBoundary += boundaryDelta[boundary];
+            minElevatorsAcrossBoundary = Math.min(minElevatorsAcrossBoundary, activeElevatorsOnBoundary);
         }
 
-        System.out.println(answer == 0 ? -1 : answer);
+        System.out.println(minElevatorsAcrossBoundary == 0 ? -1 : minElevatorsAcrossBoundary);
     }
 
     private static int nextInt(BufferedReader reader) throws Exception {
