@@ -19,7 +19,6 @@ public class Main {
         System.out.println(totalSteps);
     }
 
-    /** Cabinet index left-to-right: 0 left, 1 middle, 2 right (see problem illustration). */
     static int cabinetIndexFromFirstLetter(char firstLetterOfName) {
         if (firstLetterOfName == 'A' || firstLetterOfName == 'P' || firstLetterOfName == 'O'
                 || firstLetterOfName == 'R') {
